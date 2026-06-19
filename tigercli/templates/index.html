@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block title %}Chat{% endblock %}
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+{% block content %}
+<div id="chat-container">
+    <div id="message-list">
+        <div class="welcome-message" id="welcome-screen">
+            <div class="welcome-logo">TigerLiteCode</div>
+            <p class="welcome-sub">AI coding agent for your terminal</p>
+
+            <div class="welcome-cards">
+                <div class="welcome-card" onclick="showProjectPicker()">
+                    <div class="card-icon">📁</div>
+                    <div class="card-label">Open a Project</div>
+                    <div class="card-desc">Choose a folder to work on</div>
+                </div>
+                <div class="welcome-card" onclick="showProviderSetup()">
+                    <div class="card-icon">🔗</div>
+                    <div class="card-label">Connect Provider</div>
+                    <div class="card-desc">Add API key for DeepSeek, OpenAI, etc.</div>
+                </div>
+                <div class="welcome-card" onclick="newSession()">
+                    <div class="card-icon">💬</div>
+                    <div class="card-label">Quick Chat</div>
+                    <div class="card-desc">Start a new conversation</div>
+                </div>
+            </div>
+
+            <div class="welcome-project" id="welcome-project" style="display:none">
+                <div class="project-path-display">
+                    <span>Project: </span><span id="project-path-label">{{ current_path }}</span>
+                    <button class="btn btn-small" onclick="showProjectPicker()">Change</button>
+                </div>
+            </div>
+
+            <div id="recent-sessions" class="welcome-recent">
+                {% if sessions %}
+                <h3>Recent Sessions</h3>
+                {% for s in sessions[:5] %}
+                <div class="recent-session" onclick="switchSession('{{ s.id }}')">
+                    <span class="recent-title">{{ s.title or '(untitled)' }}</span>
+                    <span class="recent-meta">{{ s.model }} · {{ s.updated_at[:10] }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="welcome-hints">
+                <kbd>Enter</kbd> send · <kbd>Tab</kbd> toggle mode · <kbd>@</kbd> file · <kbd>/</kbd> commands
+            </div>
+        </div>
+    </div>
+
+    <div id="project-picker-overlay" class="modal-overlay hidden">
+        <div class="modal picker-modal">
+            <div class="modal-header">
+                <h3>Select Project</h3>
+                <button class="modal-close" onclick="hideProjectPicker()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="picker-path-bar">
+                    <input type="text" id="picker-current-path" class="setting-input" value="{{ current_path }}">
+                    <button class="btn" onclick="navigateFolder(document.getElementById('picker-current-path').value)">Go</button>
+                </div>
+                <div id="folder-contents" class="folder-contents">
+                    <p>Loading...</p>
+                </div>
+                <div class="picker-actions">
+                    <button class="btn btn-primary" onclick="confirmProjectPath()">Select This Folder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="input-area">
+        <div id="file-autocomplete" class="autocomplete-dropdown hidden"></div>
+        <div class="input-toolbar">
+            <button id="mode-toggle" class="mode-btn build" onclick="toggleMode()" title="Tab toggles build/plan">BUILD</button>
+            <div class="model-chooser" onclick="showModelPicker()" title="Click to change model">
+                <span id="current-model-badge" class="model-badge-current">deepseek-v4-pro</span>
+                <span class="model-arrow">▼</span>
+            </div>
+            <div class="provider-dot" id="provider-dot" title="Provider status"></div>
+        </div>
+        <div class="input-row">
+            <div class="input-wrapper">
+                <textarea id="prompt-input" rows="1" placeholder="Ask anything... (@file, /commands, Enter to send)"></textarea>
+                <div id="slash-hints" class="slash-hints hidden">
+                    <div>/undo — Undo last changes</div>
+                    <div>/redo — Redo last undo</div>
+                    <div>/new — New session</div>
+                    <div>/models — Switch model</div>
+                    <div>/connect — Add provider API key</div>
+                    <div>/project — Choose project folder</div>
+                    <div>/settings — Open settings</div>
+                    <div>/help — Show all commands</div>
+                </div>
+            </div>
+            <button id="submit-btn" onclick="sendMessage()" title="Send (Ctrl+Enter)">→</button>
+        </div>
+    </div>
+</div>
+
+<!-- Model picker modal -->
+<div id="model-picker-overlay" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Select Model</h3>
+            <button class="modal-close" onclick="hideModelPicker()">&times;</button>
+        </div>
+        <div class="modal-body" id="model-list-body">
+            <p>Loading models...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Provider setup modal -->
+<div id="provider-setup-overlay" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Connect Provider</h3>
+            <button class="modal-close" onclick="hideProviderSetup()">&times;</button>
+        </div>
+        <div class="modal-body" id="provider-setup-body">
+            <p>Loading providers...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block status %}
+{% include "status.html" %}
+{% endblock %}

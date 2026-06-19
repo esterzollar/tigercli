@@ -1,0 +1,14 @@
+<div class="status-left">
+    <span id="status-project" class="status-project" title="{{ current_path }}">{{ current_path.rsplit('/', 1)[-1] or '~' }}</span>
+    <span id="status-session-title" class="status-item dim">No session</span>
+</div>
+<div class="status-center">
+    <span id="status-model" class="status-item">{{ default_model }}</span>
+    <span id="status-mode" class="mode-badge build">BUILD</span>
+</div>
+<div class="status-right">
+    <span id="status-tokens" class="status-item dim">0 / 0</span>
+    <span id="status-cost" class="status-item dim">$0.0000</span>
+    <span id="status-cache" class="status-item dim">0%</span>
+    <span id="status-connection" class="status-dot disconnected" title="Disconnected"></span>
+</div>

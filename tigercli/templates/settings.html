@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block title %}Settings{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+<div class="settings-page">
+    <div class="settings-header">
+        <h1>Settings</h1>
+        <a href="/" class="btn btn-back">← Back to Chat</a>
+    </div>
+
+    <section class="settings-section">
+        <h2>Providers</h2>
+        <p class="section-desc">Connect your API keys to use different LLM providers.</p>
+        <div id="provider-list" class="provider-list">
+            <p>Loading providers...</p>
+        </div>
+    </section>
+
+    <section class="settings-section">
+        <h2>Agent</h2>
+        <div class="setting-row">
+            <label>Default Model</label>
+            <select id="default-model" class="setting-input"></select>
+        </div>
+        <div class="setting-row">
+            <label>Default Mode</label>
+            <select id="default-mode" class="setting-input">
+                <option value="build">Build</option>
+                <option value="plan">Plan</option>
+            </select>
+        </div>
+        <div class="setting-row">
+            <label>Thinking Mode</label>
+            <label class="toggle"><input type="checkbox" id="thinking-toggle"> <span></span></label>
+        </div>
+        <div class="setting-row">
+            <label>Reasoning Effort</label>
+            <select id="reasoning-effort" class="setting-input">
+                <option value="high">High</option>
+                <option value="max">Max</option>
+            </select>
+        </div>
+        <div class="setting-row">
+            <label>Max Turns</label>
+            <input type="number" id="max-turns" value="30" min="1" max="100" class="setting-input">
+        </div>
+    </section>
+
+    <section class="settings-section">
+        <h2>Appearance</h2>
+        <div class="setting-row">
+            <label>Theme</label>
+            <select id="theme-select" class="setting-input" onchange="toggleTheme(this.value)">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+    </section>
+
+    <section class="settings-section">
+        <h2>MCP Servers</h2>
+        <div id="mcp-list" class="mcp-list"><p>Loading...</p></div>
+        <details class="mcp-add-details">
+            <summary>Add MCP Server</summary>
+            <div class="mcp-add-form">
+                <div class="setting-row">
+                    <label>Name</label>
+                    <input type="text" id="mcp-name" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Transport</label>
+                    <select id="mcp-transport" class="setting-input" onchange="toggleMcpFields()">
+                        <option value="stdio">stdio</option>
+                        <option value="sse">SSE</option>
+                    </select>
+                </div>
+                <div id="mcp-stdio-fields">
+                    <div class="setting-row">
+                        <label>Command</label>
+                        <input type="text" id="mcp-command" class="setting-input" placeholder="npx">
+                    </div>
+                    <div class="setting-row">
+                        <label>Args</label>
+                        <input type="text" id="mcp-args" class="setting-input" placeholder="-y @modelcontextprotocol/server-filesystem /tmp">
+                    </div>
+                </div>
+                <div id="mcp-sse-fields" class="hidden">
+                    <div class="setting-row">
+                        <label>URL</label>
+                        <input type="text" id="mcp-url" class="setting-input">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addMcpServer()">Connect & Discover</button>
+            </div>
+        </details>
+    </section>
+
+    <section class="settings-section">
+        <h2>Plugins</h2>
+        <div id="plugin-list" class="plugin-list"><p>Loading...</p></div>
+        <div class="setting-row">
+            <label>Install .py Plugin</label>
+            <input type="file" id="plugin-file" accept=".py" class="setting-input">
+            <button class="btn" onclick="installPlugin()">Install</button>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block status %}{% endblock %}
+{% block scripts %}
+<script>document.addEventListener('DOMContentLoaded', loadSettingsPage);</script>
+{% endblock %}

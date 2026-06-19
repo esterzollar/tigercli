@@ -1,0 +1,15 @@
+<div class="modal permission-modal">
+    <div class="modal-header">
+        <h3>Permission Required</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <p id="permission-prompt">Allow this action?</p>
+        <div id="permission-detail" class="permission-detail"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-allow-once" onclick="resolvePermission(true, false)">Y - Allow Once</button>
+        <button class="btn btn-allow-all" onclick="resolvePermission(true, true)">A - Allow All</button>
+        <button class="btn btn-deny" onclick="resolvePermission(false, false)">N - Deny</button>
+    </div>
+</div>
